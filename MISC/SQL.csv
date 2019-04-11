@@ -1,0 +1,24 @@
+create table "user"(
+  id serial PRIMARY KEY,
+	name varchar,
+	password varchar,
+	firstName varchar,
+	lastName varchar,
+	email varchar
+);
+
+create table "traits"(
+  id serial PRIMARY KEY,
+	traits varchar
+);
+
+create table "user-to-traits"(
+  id serial PRIMARY KEY,
+  user_id INTEGER REFERENCES "user" (id),
+  traits_id INTEGER REFERENCES "traits" (id)
+
+);
+
+
+ALTER TABLE "user"
+ADD type VARCHAR
