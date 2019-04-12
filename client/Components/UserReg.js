@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
+
 import Input from "./input";
 class UserReg extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class UserReg extends Component {
     this.handlePassChange = this.handlePassChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlefName = this.handlefName.bind(this);
-    this.handlelName - this.handlelName.bind(this);
+    this.handlelName = this.handlelName.bind(this);
   }
 
   handleUserChange(evt) {
@@ -36,7 +36,7 @@ class UserReg extends Component {
     this.setState({ fName: evt.target.value, fNameEr: false });
   }
   handlelName(evt) {
-    this.setState({ lName: evt.target.value, lNameEr: false });
+    this.setState({lName: evt.target.value, lNameEr: false})
   }
   checkIfEmpty() {
     if (!this.state.user) this.setState({ userEr: true });
@@ -94,8 +94,8 @@ class UserReg extends Component {
               error={this.state.emailEr}
               type={"email"}
               name={"Email"}
-              value={this.state.user}
-              method={this.handlePassChange}
+              value={this.state.email}
+              method={this.handleEmailChange}
             />
           </div>
 
@@ -128,11 +128,4 @@ class UserReg extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserReg);
+export default UserReg;

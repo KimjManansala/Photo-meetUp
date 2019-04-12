@@ -11,23 +11,35 @@ class UserAcc extends Component {
       activeTab: 0
     };
     this.manageTab = this.manageTab.bind(this);
+    this.addUserToStore = this.addUserToStore.bind(this)
   }
   manageTab(newTab) {
     this.setState({ activeTab: newTab });
   }
+
+  addUserToStore(user){
+
+    this.props.changeUser(user)
+
+  }
+
   render() {
     return (
-      <div>
+      <div className='account-container'>
         <Tabs method={this.manageTab} activeTab={this.state.activeTab} />
-        <AccountSec activeTab={this.state.activeTab} />
+        <AccountSec activeTab={this.state.activeTab} method={this.addUserToStore}/>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+    user: state.user
+});
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+    changeUser: (user) => {dispatch({type:'UPDATE_USER', value: user})}
+});
 
 export default connect(
   mapStateToProps,

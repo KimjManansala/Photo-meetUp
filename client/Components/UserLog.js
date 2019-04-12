@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 
-import { connect } from "react-redux";
 import Input from "./input";
 
 class UserLog extends Component {
@@ -34,7 +33,9 @@ class UserLog extends Component {
       console.log("Will submit");
     }
   }
-
+  componentDidMount(){
+    console.log('THIS WLL BE PROPS', this.props.method)
+  }
   render() {
     return (
       <div className="login-container">
@@ -74,11 +75,4 @@ class UserLog extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserLog);
+export default UserLog;

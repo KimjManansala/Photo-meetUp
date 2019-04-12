@@ -3,13 +3,13 @@ import UserLog from './UserLog';
 import UserReg from './UserReg';
 
 
-const AccountSec = ( {activeTab }) => {
+const AccountSec = ( {activeTab, method }) => {
   return (
      <React.Fragment>
      {activeTab === 0 ? (
-         <UserLog/>
+         <UserLog method={method}/>
         ) : activeTab === 1 ? (
-          <UserReg/> ): null
+          <UserReg method={method}/> ): null
      }
 
      </React.Fragment>

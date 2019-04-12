@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 
 
 // ALL ROUTES WILL GO HERE
+app.use(require('./Routes/user'))
 
 // frontend entry
 app.use('*', (req, res) => {
