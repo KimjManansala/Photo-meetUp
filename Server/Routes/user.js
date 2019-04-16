@@ -3,6 +3,7 @@ const router = express.Router();
 const validator = require("email-validator");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
+const AWS = require('aws-sdk');
 router.use(bodyParser.json());
 router.use(
   bodyParser.urlencoded({
@@ -13,9 +14,17 @@ module.exports = router;
 const saltRounds = 10;
 const userQue = require("../Query/user");
 
+
+//configuring the AWS environment
+// AWS.config.update({
+//     accessKeyId: "<Access Key Here>",
+//     secretAccessKey: "<Secret Access Key Here>"
+//   });
+
+//   var s3 = new AWS.S3();
+
 router.post("/api/reg", (req, res) => {
-    
-  let user = req.body;
+  let user = req.body.user;
   if (validator.validate(user.email)) {
     bcrypt
       .hash(user.password, saltRounds)
@@ -31,6 +40,7 @@ router.post("/api/reg", (req, res) => {
             res.send(data)
         })
         .catch(er=>{
+            console.log(er)
             res.send(er)
         })
       })
@@ -44,6 +54,17 @@ router.post("/api/reg", (req, res) => {
 
 router.get("/api/log", (req, res) => {
   let user = req.query.user;
+  let password = req.query.password
+  userQue.loginUser({username: user, password: password})
+  .then(data=>{
+      res.send(data)
+  })
+  .catch(er=>{
+      res.send(er)
+  })
 });
 
 
+router.post('/api/user/img', (req,res)=>{
+    console.log(req.body)
+})

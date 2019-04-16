@@ -22,3 +22,11 @@ create table "user-to-traits"(
 
 ALTER TABLE "user"
 ADD type VARCHAR
+
+create table "user-data"(
+  id serial PRIMARY KEY,
+	img varchar,
+	phone varchar,
+	about varchar,
+	user_id INTEGER REFERENCES "user" (id)
+);

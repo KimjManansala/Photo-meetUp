@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import axios from "axios";
 import Input from "./input";
 
 class UserLog extends Component {
@@ -27,9 +27,33 @@ class UserLog extends Component {
     if (this.state.user && this.state.password) return true;
   }
 
+  handleError(type){
+
+    this.setState({[type]: true})
+
+  }
+
+
   handleSubmit(evt) {
     evt.preventDefault();
     if (this.checkIfEmpty()) {
+      axios.get('/api/log', {
+        params: { user: this.state.user, password: this.state.password }
+      })
+      .then(data=>{
+        console.log('Hello', data.data)
+        if(!data.data.success){
+          if(data.data.type === 'username'){
+            console.log('HELO2', )
+            this.handleError('userEr')
+          }else if(data.data.type === 'password'){
+            this.handleError('passwordEr')
+          }
+        }else{
+          this.props.method(data.data.user)
+        }
+        console.log(data.data)
+      })
       console.log("Will submit");
     }
   }

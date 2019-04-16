@@ -1,6 +1,6 @@
 import React from "react";
 
-const Input = ({ error, type, name, value, method }) => {
+const Input = ({ error, type, name, value, method}) => {
   return (
     <div className="field">
       <label className="label">{name}</label>
@@ -15,7 +15,7 @@ const Input = ({ error, type, name, value, method }) => {
           }}
         />
       </div>
-      {error ? <p class="help is-danger">This {name} is invalid</p> : null}
+      {error ? <p className="help is-danger">This {name} is invalid</p> : null}
     </div>
   );
 };

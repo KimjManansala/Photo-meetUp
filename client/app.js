@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 // Redux
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 
 // React Router
 import { Router, Route, Switch } from "react-router-dom";
@@ -21,6 +21,7 @@ import Home from "./Containers/Homepage";
 import UserLog from "./Components/UserLog"
 import UserAcc from "./Containers/UserAcc";
 import UserPage from './Containers/UserPage'
+import createUser from './Containers/createUser'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // Initialize redux store and thunk middleware
@@ -33,7 +34,9 @@ ReactDOM.render(
         <Route path="/" exact component={Home} />
         <Route path='/userLog' exact component={UserLog}/>
         <Route path='/account' exact component={UserAcc}/>
+        <Route path='/createUserInfo' exact component={createUser}/>
         <Route path='/:name' exact component={UserPage}/>
+        
       </Switch>
     </Router>
   </Provider>,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import axios from "axios";
 import Input from "./input";
 class UserReg extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class UserReg extends Component {
     this.setState({ fName: evt.target.value, fNameEr: false });
   }
   handlelName(evt) {
-    this.setState({lName: evt.target.value, lNameEr: false})
+    this.setState({ lName: evt.target.value, lNameEr: false });
   }
   checkIfEmpty() {
     if (!this.state.user) this.setState({ userEr: true });
@@ -53,10 +53,43 @@ class UserReg extends Component {
     )
       return true;
   }
+  handleError(type){
+
+    this.setState({[type]: true})
+
+  }
 
   handleSubmit(evt) {
     evt.preventDefault();
     if (this.checkIfEmpty()) {
+      axios.post("/api/reg", {
+        user: {
+          username: this.state.user,
+          password: this.state.password,
+          email: this.state.email,
+          first: this.state.fName,
+          last: this.state.lName
+        }
+      })
+      .then(data=>{
+        console.log('This should be data', data)
+        if(!data.data.success){
+          if(data.data.type === 'email'){
+            this.handleError('emailEr')
+          }else if(data.data.type === 'password'){
+            this.handleError('passwordEr')
+          }else if(data.data.type === 'username'){
+            this.handleError('userEr')
+          }
+        }
+        else{
+
+          this.props.method(data.data.user)
+        }
+      })
+      .catch(er=>{
+        console.log('This should be er', er)
+      })
       console.log("Will submit");
     }
   }
@@ -117,6 +150,7 @@ class UserReg extends Component {
               method={this.handlelName}
             />
           </div>
+
           <div className="field is-grouped">
             <div className="control">
               <button className="button is-link">Submit</button>

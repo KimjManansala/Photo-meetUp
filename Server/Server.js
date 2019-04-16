@@ -4,6 +4,8 @@ const compress = require('compression');
 const path = require('path');
 const bodyParser = require('body-parser');
 
+// dotenv
+require('dotenv').config()
 // heroku
 // const sslRedirect = require('heroku-ssl-redirect');
 
@@ -24,6 +26,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 
 // ALL ROUTES WILL GO HERE
 app.use(require('./Routes/user'))
+app.use(require('./Routes/images'))
 
 // frontend entry
 app.use('*', (req, res) => {
