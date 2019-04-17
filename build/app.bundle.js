@@ -5238,6 +5238,7 @@ var createUser = function (_Component) {
           _react2.default.createElement("input", {
             label: "upload file",
             type: "file",
+            accept: "image/*",
             onChange: function onChange(evt) {
               _this2.handleFileUpload(evt);
             }

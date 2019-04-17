@@ -47,6 +47,7 @@ class createUser extends Component {
           <input
             label="upload file"
             type="file"
+            accept='image/*'
             onChange={(evt)=>{this.handleFileUpload(evt)}}
           />
           <button type="submit">Send</button>
