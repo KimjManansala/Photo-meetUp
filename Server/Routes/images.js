@@ -66,6 +66,28 @@ router.post('/api/profile/photo', (request, response) => {
   });
 
 
+  router.post('/api/portfolio/images', (req, res)=>{
+    // let user = req.session.user
+    const form = new multiparty.Form();
+
+    form.parse(req, async (error, fields, files) => {
+
+      if (error) throw new Error(error);
+        try{      
+          const path = files.file[0].path;
+          const buffer = fs.readFileSync(path);
+          const type = fileType(buffer);
+          const timestamp = Date.now().toString();
+          const fileName = `test1/${timestamp}-lg`;
+          const data = await uploadFile(buffer, fileName, type);
+          console.log('This is data', data)
+          return res.status(200).send(data);
+        } catch (error) {
+            console.log('this is error', error)
+          return res.status(400).send(error);
+        }
+  })
+})
 
 
 

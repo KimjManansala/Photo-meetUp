@@ -4,19 +4,27 @@ import { connect } from "react-redux";
 import axios from "axios";
 import Input from "../Components/input";
 import TextFieldInput from "../Components/TextFieldInput";
+import ImageUpload from "../Components/ImageUpload";
+import PortFolioSec from "../Components/PortFolioSec";
 
 class createUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       file: null,
+      fileKey: null,
       profile: null,
       phone: "",
       phoneEr: false,
       about: "",
-      aboutEr: false
+      aboutEr: false,
+      numChar: 0,
+      portImg: []
     };
-    this.handlePhoneChange = this.handlePhoneChange.bind(this)
+    this.handlePhoneChange = this.handlePhoneChange.bind(this);
+    this.handleAboutChange = this.handleAboutChange.bind(this);
+    this.handlePortUpload = this.handlePortUpload.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   submitFile(event) {
@@ -40,34 +48,72 @@ class createUser extends Component {
   }
 
   handleFileUpload(event) {
+    console.log(event.target);
     this.setState({ file: event.target.files });
   }
 
-  handlePhoneChange(event){
-    console.log(typeof event.target.value,  /^\d*$/.test(event.target.value))
-    if( /^\d*$/.test(event.target.value))
-      if(event.target.value.length <= 10)
-        this.setState({phone: event.target.value, phoneEr:false})
-      else
-        this.setState({phoneEr: true})
-    else
-    this.setState({phoneEr: true})
+  handlePhoneChange(event) {
+    console.log(typeof event.target.value, /^\d*$/.test(event.target.value));
+    if (/^\d*$/.test(event.target.value))
+      if (event.target.value.length <= 10)
+        this.setState({ phone: event.target.value, phoneEr: false });
+      else this.setState({ phoneEr: true });
+    else this.setState({ phoneEr: true });
   }
 
+  handleAboutChange(event) {
+    if (event.target.value.length <= 150) {
+      this.setState({
+        about: event.target.value,
+        numChar: event.target.value.length,
+        aboutEr: false
+      });
+    } else {
+      this.setState({ aboutEr: true });
+    }
+  }
+  deepCopy(x){
+    return JSON.parse(JSON.stringify(x));
+  }
+  handlePortUpload(event) {
+    console.log(this.state.portImg)
+    let port = this.deepCopy(this.state.portImg)
+    console.log(port)
+    let images = event.target.files;
+    for (let i = 0; i < images.length; i++) {
+      let formData = new FormData();
+      formData.append("file", images[i]);
+
+      axios
+        .post(`/api/portfolio/images`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(data => {
+          port.push({ imgSrc: data.data.Location, imgkey: data.data.key });
+          this.setState({ portImg: port });
+        })
+        .catch(console.error)
+    }
+    console.log(port)
 
 
+    console.log(this.state.portImg)
+  }
+
+  handleRemove(key) {
+    console.log(key);
+  }
 
   componentDidUpdate() {
-    console.log(this.state)
+    console.log(this.state);
   }
-  componentDidMount() {
-    console.log(this.handleChange);
-  }
+  componentDidMount() {}
 
   render() {
     return (
       <div>
-
         {this.state.profile ? (
           <div className="profile-input">
             <img src={this.state.profile} />
@@ -93,19 +139,35 @@ class createUser extends Component {
           </div>
 
           <Input
-          error={this.state.phoneEr}
-          type={'text'}
-          name={'Phone Number'}
-          placeholder={'Ex. 832123456'}
-          value={this.state.phone}
-          method={this.handlePhoneChange}
-          pattern={"[0-9]*"}
+            error={this.state.phoneEr}
+            type={"text"}
+            name={"Phone Number"}
+            placeholder={"Ex. 832123456"}
+            value={this.state.phone}
+            method={this.handlePhoneChange}
+            pattern={"[0-9]*"}
           />
-          <TextFieldInput
+          <div className="about-container">
+            <TextFieldInput
+              name={"About me"}
+              value
+              value={this.state.about}
+              error={this.state.aboutEr}
+              method={this.handleAboutChange}
+              placeholder={"Say something you want your clients to know"}
+              charNum={this.state.numChar}
+            />
+          </div>
+          <button type="submit">Save</button>
+
+          <PortFolioSec
+            uploadMethod={this.handlePortUpload}
+            uploLabel={"Portfolio Images"}
+            uploAccept={"image/*"}
+            upLoType={"file"}
+            images={this.state.portImg}
+            remove={this.handleRemove}
           />
-
-
-          <button type="submit">Send</button>
         </form>
       </div>
     );
