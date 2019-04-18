@@ -54,7 +54,7 @@ router.post('/api/profile/photo', (request, response) => {
           const buffer = fs.readFileSync(path);
           const type = fileType(buffer);
           const timestamp = Date.now().toString();
-          const fileName = `bucketFolder/${timestamp}-lg`;
+          const fileName = `userProfile/${timestamp}-lg`;
           const data = await uploadFile(buffer, fileName, type);
           console.log('This is data', data)
           return response.status(200).send(data);

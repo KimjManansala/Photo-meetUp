@@ -36,3 +36,8 @@
     /* margin: auto; */
     width: fit-content
 }
+
+.profile-input{
+    height: 100px;
+    width: 100px;
+}
