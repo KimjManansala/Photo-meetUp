@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Tabs from "../Components/Tabs";
 import AccountSec from "../Components/AccountSec";
+// import history from "../history";
 class UserAcc extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +21,8 @@ class UserAcc extends Component {
   addUserToStore(user){
 
     this.props.changeUser(user)
+    if(this.props.history)
+    this.props.history.push('/createUserInfo')
 
   }
 
@@ -34,7 +37,7 @@ class UserAcc extends Component {
 }
 
 const mapStateToProps = state => ({
-    user: state.user
+    user: state.userReducer
 });
 
 const mapDispatchToProps = dispatch => ({

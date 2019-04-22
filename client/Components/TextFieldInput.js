@@ -13,7 +13,7 @@ const TextFieldInput = ({
       <label className="label">{name}</label>
       <div className="control">
         <textarea
-          className={error ? "textarea is-danger" : "textarea"}
+          className={error ? "textarea about-text is-danger" : "textarea about-text"}
           placeholder={placeholder}
           onChange={e => {
             method(e);

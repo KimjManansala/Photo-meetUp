@@ -37,6 +37,8 @@ router.post("/api/reg", (req, res) => {
           last: user.last
         })
         .then(data=>{
+          req.session.user = data.user
+
             res.send(data)
         })
         .catch(er=>{
@@ -57,7 +59,10 @@ router.get("/api/log", (req, res) => {
   let password = req.query.password
   userQue.loginUser({username: user, password: password})
   .then(data=>{
-      res.send(data)
+    req.session.user = data.user
+    console.log(req.session)      
+    res.send(data)
+
   })
   .catch(er=>{
       res.send(er)

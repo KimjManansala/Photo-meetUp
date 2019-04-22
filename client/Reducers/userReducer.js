@@ -7,7 +7,10 @@ const userReducer = (state = {}, action) => {
   
         newState = action.value
         return newState
-  
+      case 'REMOVE_USER':
+        newState= {}
+        return newState
+    
       default:
         return newState
     }

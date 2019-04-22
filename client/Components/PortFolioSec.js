@@ -9,19 +9,29 @@ const PortFolioSec = ({
   images,
   remove
 }) => {
-  return <div>
-    <h2>Please choose your best 10 photos</h2>
-    {images.map((image,index)=>(
-        <div onClick={()=>{remove(image.imgkey)}} key={index}>
-            <img src={image.imgSrc}/>
+  return (
+    <React.Fragment>
+      
+      {images.map((image, index) => (
+        <div className='port-images'
+          onClick={() => {
+            remove(image.imgkey);
+          }}
+          key={index}
+        >
+          <img src={image.imgSrc} />
         </div>
-    ))}
-      {images.length <10? <ImageUpload 
-      label={uploLabel} 
-      accept={uploAccept} 
-      type={upLoType} 
-      method={uploadMethod}/>: null}
-  </div>;
+      ))}
+      {images.length < 10 ? (
+        <ImageUpload
+          label={uploLabel}
+          accept={uploAccept}
+          type={upLoType}
+          method={uploadMethod}
+        />
+      ) : null}
+    </React.Fragment>
+  );
 };
 
 PortFolioSec.propTypes = {};

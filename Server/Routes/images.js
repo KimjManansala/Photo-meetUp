@@ -11,7 +11,7 @@ const multiparty = require('multiparty');
 var multer = require('multer')
 var multerS3 = require('multer-s3')
 
-
+const userProfile = require('../Query/userProfile')
 
 router.use(bodyParser.json());
 router.use(
@@ -44,8 +44,8 @@ const uploadFile = (buffer, name, type) => {
   };
 
 
-router.post('/api/profile/photo', (request, response) => {
-    console.log('iS SENDING TO /API/PROFILE/PHOOS')
+router.post('/api/profile/image', (request, response) => {
+  console.log('RUNNNING IMAGES')
     const form = new multiparty.Form();
       form.parse(request, async (error, fields, files) => {
         if (error) throw new Error(error);
@@ -54,10 +54,11 @@ router.post('/api/profile/photo', (request, response) => {
           const buffer = fs.readFileSync(path);
           const type = fileType(buffer);
           const timestamp = Date.now().toString();
-          const fileName = `userProfile/${timestamp}-lg`;
+          const fileName = `userProfile/${request.session.user.name}/${timestamp}-lg`;
           const data = await uploadFile(buffer, fileName, type);
           console.log('This is data', data)
-          return response.status(200).send(data);
+          const results = await userProfile.updateUserData(data, request.session.user, {phone: '443',  about: 'Text'})
+          return response.status(200).send(results);
         } catch (error) {
             console.log('this is error', error)
           return response.status(400).send(error);
@@ -67,18 +68,19 @@ router.post('/api/profile/photo', (request, response) => {
 
 
   router.post('/api/portfolio/images', (req, res)=>{
-    // let user = req.session.user
+    let user = req.session.user
     const form = new multiparty.Form();
 
     form.parse(req, async (error, fields, files) => {
-
       if (error) throw new Error(error);
         try{      
+          console.log('hello', fields.user[0])
+          console.log(files)
           const path = files.file[0].path;
           const buffer = fs.readFileSync(path);
           const type = fileType(buffer);
           const timestamp = Date.now().toString();
-          const fileName = `test1/${timestamp}-lg`;
+          const fileName = `${user.name}/${timestamp}-lg`;
           const data = await uploadFile(buffer, fileName, type);
           console.log('This is data', data)
           return res.status(200).send(data);
@@ -88,42 +90,4 @@ router.post('/api/profile/photo', (request, response) => {
         }
   })
 })
-
-
-
-// const s3 = new AWS.S3();
-// // var params = {
-// //     Bucket: 'kimjmanansala-photo',
-// //     Body : fs.createReadStream(filePath),
-// //     Key : "folder/"+Date.now()+"_"+path.basename(filePath)
-// //   };
-
-
-// var upload = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         bucket: 'kimjmanansala-photo',
-//         key: function (req, file, cb) {
-//             console.log(file);
-//             cb(null,  "folder/"+Date.now()+"_"+path.basename(file)); //use Date.now() for unique file keys
-//         }
-//     })
-// });
-
-
-// router.post("/api/profile/photo", upload.array('upl',1), (req, res) => {
-//     res.send("Uploaded!");
-// })
-
-//   s3.upload(params, function(err, data) {
-//     //handle error
-//     if (err) {
-//       console.log("Error", err);
-//     }
-
-//     //success
-//     if (data) {
-//       console.log("Uploaded in:", data.Location);
-//     }
-//   });
 

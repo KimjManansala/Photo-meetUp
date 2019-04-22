@@ -1,0 +1,15 @@
+.portfolio-sec{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.port-images{
+    width: 100px;
+    height: 100px;
+}
+
+
+.about-text{
+    width: 80vw;
+    /* margin: 0 calc(-60vw + 50%) */
+}

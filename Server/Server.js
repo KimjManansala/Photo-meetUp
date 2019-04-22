@@ -15,8 +15,16 @@ const app = express();
 // heroku
 // app.use(sslRedirect());
 
-const buildPath = path.join(__dirname, '..', 'build');
 
+const sessionsObj = {
+  secret: "photoMeetUp",
+  resave: "false",
+  saveUninitialized: "false",
+  cookie: {}
+};
+
+const buildPath = path.join(__dirname, '..', 'build');
+app.use(session(sessionsObj));
 app.use(express.static(buildPath));
 app.use(compress());
 
@@ -27,7 +35,13 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 // ALL ROUTES WILL GO HERE
 app.use(require('./Routes/user'))
 app.use(require('./Routes/images'))
-
+app.get('/checklogged', (req,res)=>{
+    if(req.session.user){
+        res.send({user: req.session.user})
+    }else{
+        res.send({error:'no-user'})
+    }
+})
 // frontend entry
 app.use('*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'build/index.html'));

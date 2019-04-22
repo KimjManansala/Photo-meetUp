@@ -52,9 +52,7 @@ class UserLog extends Component {
         }else{
           this.props.method(data.data.user)
         }
-        console.log(data.data)
       })
-      console.log("Will submit");
     }
   }
   componentDidMount(){

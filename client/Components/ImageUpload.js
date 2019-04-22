@@ -6,8 +6,8 @@ const ImageUpload = ({label, accept, type, method }) => {
       <label className="file-label">
         <input
           className="file-input"
-          type="file"
-          accept="image/*"
+          type={type}
+          accept={accept}
           onChange={(e) => {
             method(e);
           }}

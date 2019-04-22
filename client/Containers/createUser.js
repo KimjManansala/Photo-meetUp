@@ -6,6 +6,7 @@ import Input from "../Components/input";
 import TextFieldInput from "../Components/TextFieldInput";
 import ImageUpload from "../Components/ImageUpload";
 import PortFolioSec from "../Components/PortFolioSec";
+import PleaseLogin from "../Components/PleaseLogin";
 
 class createUser extends Component {
   constructor(props) {
@@ -19,14 +20,27 @@ class createUser extends Component {
       about: "",
       aboutEr: false,
       numChar: 0,
-      portImg: []
+      portImg: [],
+      finishLoadng: false
     };
+    this.checkLoging();
     this.handlePhoneChange = this.handlePhoneChange.bind(this);
     this.handleAboutChange = this.handleAboutChange.bind(this);
     this.handlePortUpload = this.handlePortUpload.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleFileUpload = this.handleFileUpload.bind(this);
   }
-
+  checkLoging() {
+    axios.get("/checklogged").then(data => {
+      console.log(data);
+      if (data.data.user) {
+        this.props.changeUser(data.data.user);
+      } else {
+        console.log("none");
+      }
+      this.setState({ finishLoadng: true });
+    });
+  }
   submitFile(event) {
     event.preventDefault();
     const formData = new FormData();
@@ -48,12 +62,56 @@ class createUser extends Component {
   }
 
   handleFileUpload(event) {
-    console.log(event.target);
-    this.setState({ file: event.target.files });
+    console.log(event.target.files[0])
+    let formData = new FormData();
+
+    formData.append('file', event.target.files[0])
+    axios.post('/api/profile/image', formData,{
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    .then(console.log)
+    .catch(console.log)
+    // console.log(event.target.files)
+    // console.log(event.target.files)
+    // this.setState({ file: event.target.files[0]});
+    // console.log(this.state.file)
   }
 
+  deepCopy(x) {
+    return JSON.parse(JSON.stringify(x));
+  }
+  handlePortUpload(event) {
+
+    let port = this.deepCopy(this.state.portImg);
+
+    let images = event.target.files;
+    for (let i = 0; i < images.length; i++) {
+      let formData = new FormData();
+      formData.append("file", images[i]);
+      formData.append("user", "kimj");
+      axios
+        .post(`/api/portfolio/images`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(data => {
+          port.push({ imgSrc: data.data.Location, imgkey: data.data.key });
+          this.setState({ portImg: port });
+        })
+        .catch(console.error);
+    }
+    console.log(port);
+
+    console.log(this.state.portImg);
+  }
+
+
+
+
   handlePhoneChange(event) {
-    console.log(typeof event.target.value, /^\d*$/.test(event.target.value));
     if (/^\d*$/.test(event.target.value))
       if (event.target.value.length <= 10)
         this.setState({ phone: event.target.value, phoneEr: false });
@@ -72,111 +130,99 @@ class createUser extends Component {
       this.setState({ aboutEr: true });
     }
   }
-  deepCopy(x){
-    return JSON.parse(JSON.stringify(x));
-  }
-  handlePortUpload(event) {
-    console.log(this.state.portImg)
-    let port = this.deepCopy(this.state.portImg)
-    console.log(port)
-    let images = event.target.files;
-    for (let i = 0; i < images.length; i++) {
-      let formData = new FormData();
-      formData.append("file", images[i]);
-
-      axios
-        .post(`/api/portfolio/images`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(data => {
-          port.push({ imgSrc: data.data.Location, imgkey: data.data.key });
-          this.setState({ portImg: port });
-        })
-        .catch(console.error)
-    }
-    console.log(port)
-
-
-    console.log(this.state.portImg)
-  }
+  
 
   handleRemove(key) {
     console.log(key);
   }
 
-  componentDidUpdate() {
-    console.log(this.state);
-  }
+  componentDidUpdate() {}
   componentDidMount() {}
 
   render() {
     return (
-      <div>
-        {this.state.profile ? (
-          <div className="profile-input">
-            <img src={this.state.profile} />
-          </div>
+      <React.Fragment>
+        {this.state.finishLoadng ? (
+          <React.Fragment>
+            {this.props.user.name ? (
+              <div>
+                {this.state.profile ? (
+                  <div className="profile-input">
+                    <img src={this.state.profile} />
+                  </div>
+                ) : null}
+                <form
+                  onSubmit={evt => {
+                    this.submitFile(evt);
+                  }}
+                >
+                 
+
+                  <ImageUpload
+                    label={"Profile Picture"}
+                    accept={"image/*"}
+                    type={"file"}
+                    method={this.handleFileUpload}
+                  />
+
+                  <Input
+                    error={this.state.phoneEr}
+                    type={"text"}
+                    name={"Phone Number"}
+                    placeholder={"Ex. 832123456"}
+                    value={this.state.phone}
+                    method={this.handlePhoneChange}
+                    pattern={"[0-9]*"}
+                  />
+                  <div className="about-container">
+                    <TextFieldInput
+                      name={"About me"}
+                      value
+                      value={this.state.about}
+                      error={this.state.aboutEr}
+                      method={this.handleAboutChange}
+                      placeholder={
+                        "Say something you want your clients to know"
+                      }
+                      charNum={this.state.numChar}
+                    />
+                  </div>
+                  <h2>Please choose your best 10 photos</h2>
+                  <div className="portfolio-sec">
+                    <PortFolioSec
+                      uploadMethod={this.handlePortUpload}
+                      uploLabel={"Portfolio Images"}
+                      uploAccept={"image/*"}
+                      upLoType={"file"}
+                      images={this.state.portImg}
+                      remove={this.handleRemove}
+                    />
+                  </div>
+                  <button type="submit">Save</button>
+                </form>
+              </div>
+            ) : (
+              <PleaseLogin />
+            )}
+          </React.Fragment>
         ) : null}
-        <form
-          onSubmit={evt => {
-            this.submitFile(evt);
-          }}
-        >
-          <div className="field">
-            <label className="label">{name}</label>
-            <div className="control">
-              <input
-                label="upload file"
-                type="file"
-                accept="image/*"
-                onChange={evt => {
-                  this.handleFileUpload(evt);
-                }}
-              />
-            </div>
-          </div>
-
-          <Input
-            error={this.state.phoneEr}
-            type={"text"}
-            name={"Phone Number"}
-            placeholder={"Ex. 832123456"}
-            value={this.state.phone}
-            method={this.handlePhoneChange}
-            pattern={"[0-9]*"}
-          />
-          <div className="about-container">
-            <TextFieldInput
-              name={"About me"}
-              value
-              value={this.state.about}
-              error={this.state.aboutEr}
-              method={this.handleAboutChange}
-              placeholder={"Say something you want your clients to know"}
-              charNum={this.state.numChar}
-            />
-          </div>
-          <button type="submit">Save</button>
-
-          <PortFolioSec
-            uploadMethod={this.handlePortUpload}
-            uploLabel={"Portfolio Images"}
-            uploAccept={"image/*"}
-            upLoType={"file"}
-            images={this.state.portImg}
-            remove={this.handleRemove}
-          />
-        </form>
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  user: state.userReducer
+});
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  changeUser: user => {
+    dispatch({ type: "UPDATE_USER", value: user });
+  },
+  removeUser: () => {
+    dispatch({ type: "REMOVE_USER" });
+  }
+});
 
 export default connect(
   mapStateToProps,
