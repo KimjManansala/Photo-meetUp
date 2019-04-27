@@ -71,12 +71,13 @@ class createUser extends Component {
         "Content-Type": "multipart/form-data"
       }
     })
-    .then(console.log)
-    .catch(console.log)
-    // console.log(event.target.files)
-    // console.log(event.target.files)
-    // this.setState({ file: event.target.files[0]});
-    // console.log(this.state.file)
+    .then(res=>{
+      console.log(res)
+      this.setState({profile: res.data.img})
+    })
+    .catch(er=>{
+      console.log(er)
+    })
   }
 
   deepCopy(x) {

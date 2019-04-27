@@ -58,6 +58,7 @@ router.post('/api/profile/image', (request, response) => {
           const data = await uploadFile(buffer, fileName, type);
           console.log('This is data', data)
           const results = await userProfile.updateUserData(data, request.session.user, {phone: '443',  about: 'Text'})
+          console.log(results)
           return response.status(200).send(results);
         } catch (error) {
             console.log('this is error', error)
@@ -91,3 +92,9 @@ router.post('/api/profile/image', (request, response) => {
   })
 })
 
+
+router.delete('/api/remove/images', (req, res)=>{
+  let data = userProfile.deleteImg(req.data.imgKey)
+  console.log(data)
+
+})

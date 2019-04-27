@@ -5323,6 +5323,8 @@ var createUser = function (_Component) {
   }, {
     key: "handleFileUpload",
     value: function handleFileUpload(event) {
+      var _this4 = this;
+
       console.log(event.target.files[0]);
       var formData = new FormData();
 
@@ -5331,11 +5333,12 @@ var createUser = function (_Component) {
         headers: {
           "Content-Type": "multipart/form-data"
         }
-      }).then(console.log).catch(console.log);
-      // console.log(event.target.files)
-      // console.log(event.target.files)
-      // this.setState({ file: event.target.files[0]});
-      // console.log(this.state.file)
+      }).then(function (res) {
+        console.log(res);
+        _this4.setState({ profile: res.data.img });
+      }).catch(function (er) {
+        console.log(er);
+      });
     }
   }, {
     key: "deepCopy",
@@ -5345,7 +5348,7 @@ var createUser = function (_Component) {
   }, {
     key: "handlePortUpload",
     value: function handlePortUpload(event) {
-      var _this4 = this;
+      var _this5 = this;
 
       var port = this.deepCopy(this.state.portImg);
 
@@ -5360,7 +5363,7 @@ var createUser = function (_Component) {
           }
         }).then(function (data) {
           port.push({ imgSrc: data.data.Location, imgkey: data.data.key });
-          _this4.setState({ portImg: port });
+          _this5.setState({ portImg: port });
         }).catch(console.error);
       }
       console.log(port);
@@ -5401,7 +5404,7 @@ var createUser = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this,
+      var _this6 = this,
           _React$createElement;
 
       return _react2.default.createElement(
@@ -5422,7 +5425,7 @@ var createUser = function (_Component) {
               "form",
               {
                 onSubmit: function onSubmit(evt) {
-                  _this5.submitFile(evt);
+                  _this6.submitFile(evt);
                 }
               },
               _react2.default.createElement(_ImageUpload2.default, {

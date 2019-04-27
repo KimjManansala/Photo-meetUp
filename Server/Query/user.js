@@ -1,5 +1,6 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
+
 function addUser(user) {
   return new Promise((resolve, reject) => {
     db.any('SELECT * FROM "user" WHERE name = $1', [user.username])
